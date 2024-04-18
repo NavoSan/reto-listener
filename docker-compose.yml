@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  flask-app:
+    container_name: flask-app
+    image: listener-app  # Usa el nombre de la imagen que creaste
+    ports:
+      - "8880:8880"  # Mapea el puerto del contenedor al puerto del host
+    environment:
+      - ENVIRONMENT=production
+      - API_ENDPOINT=/webhook
+    volumes:
+      - ./data:/app/data  # Opcional: Mapea un directorio para persistencia de datos
+    restart: unless-stopped  # Reinicia el contenedor a menos que se haya detenido manualmente
