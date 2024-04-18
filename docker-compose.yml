@@ -1,8 +1,7 @@
 version: '3.8'
 services:
-  flask-app:
-    container_name: listener-app
-    image: listener-app  # Usa el nombre de la imagen que creaste
+  listener-app:
+    build: .
     ports:
       - "8880:8880"  # Mapea el puerto del contenedor al puerto del host
     environment:

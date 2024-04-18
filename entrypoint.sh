@@ -1,11 +1,8 @@
 #!/bin/bash
-# Script para clonar o actualizar el repositorio Git
 
-# Directorio donde el repositorio será clonado
-REPO_DIR="/app/repo"
 
-# Verifica si el directorio ya existe y contiene un repositorio git
-if [ -d "$REPO_DIR/.git" ]; then
+# Clonar el repositorio si no existe, de lo contrario hacer pull para actualizarlo
+if [ -d "$GIT_URL/.git" ]; then
     echo "Actualizando el repositorio existente..."
     git -C "$REPO_DIR" pull
 else
@@ -13,5 +10,6 @@ else
     git clone "$GIT_URL" "$REPO_DIR"
 fi
 
-# Ejecuta el comando original de CMD en Dockerfile
-exec "$@"
+# Moverse al directorio del repositorio y ejecutar la aplicación Flask
+cd "$REPO_DIR"
+python app.py

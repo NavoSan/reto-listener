@@ -1,19 +1,24 @@
-FROM python:3.8-slim
+# Usar una imagen base oficial de Python
+FROM python:3.9-slim
 
+# Instalar git para clonar/pull el repositorio
 RUN apt-get update && apt-get install -y git
 
-WORKDIR /app/repo
+# Establecer el directorio de trabajo
+WORKDIR /app
 
-COPY app/repo/requirements.txt .
+# Copiar el script de entrada y el archivo de requerimientos
+COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY requirements.txt /app/
 
-RUN pip install --upgrade pip
+# Instalar las dependencias de Python
 RUN pip install -r requirements.txt
 
-COPY app/ .
-
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+# Hacer que el script de entrada sea ejecutable
 RUN chmod +x /usr/local/bin/entrypoint.sh
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
+# Exponer el puerto en el que Flask se ejecutará
 EXPOSE 8880
-CMD ["gunicorn", "--bind", "0.0.0.0:8880", "--reload", "--log-level=debug", "app:app"]
+
+# Establecer el script de entrada como el punto de entrada
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
