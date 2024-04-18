@@ -1,21 +1,19 @@
-# Usar una imagen base de Python
 FROM python:3.8-slim
 
-# Establecer el directorio de trabajo en el contenedor
-WORKDIR /App
+RUN apt-get update && apt-get install -y git
 
-# Copiar el archivo de dependencias primero para aprovechar la caché de Docker
-COPY App/requirements.txt .
+WORKDIR /app/repo
 
-# Instalar las dependencias
+COPY app/repo/requirements.txt .
+
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-# Copiar el resto del código fuente del proyecto al contenedor
-COPY App/ .
+COPY app/ .
 
-# Expone el puerto 8880
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
 EXPOSE 8880
-
-# Comando para ejecutar la aplicación usando gunicorn en el puerto 8880 con recarga automática
 CMD ["gunicorn", "--bind", "0.0.0.0:8880", "--reload", "--log-level=debug", "app:app"]
